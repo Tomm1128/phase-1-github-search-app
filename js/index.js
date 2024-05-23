@@ -40,7 +40,6 @@ const init = () => {
   const handleRepoBtn = (event) => {
     let selectedUser = event.target.parentNode.textContent.split(" ")[0]
     let url = `https://api.github.com/users/${selectedUser}/repos`
-    let responseData
     repoSection.innerHTML = ""
 
     handleFetch(url, renderRepoList)
@@ -90,7 +89,6 @@ const init = () => {
   const handleSearch = (event) => {
     event.preventDefault()
     let userInput 
-    let responseData
     let url 
 
     userSection.innerHTML = ""
