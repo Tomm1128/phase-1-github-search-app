@@ -4,6 +4,7 @@ const init = () => {
   const toggleSearchBtn = document.getElementById("toggle-search")
   const searchLabel = document.getElementById("search-label")
   let labelText = searchLabel.textContent.split(" ")[0]
+  const searchForm = document.getElementById("github-form")
 
   const handleFetch = (url, callBack) => {
     fetch(url, {
@@ -49,6 +50,7 @@ const init = () => {
     let repoBtns = []
     let searchList = data.items
     searchList.forEach((listItem) => {
+      const div = document.createElement("div")
       const li = document.createElement("li")
       const p = document.createElement("p")
       const img = document.createElement("img")
@@ -60,6 +62,7 @@ const init = () => {
       let gitHubPage = listItem.html_url
 
       li.textContent = `${userName} `
+      li.className = "user-card"
 
       p.textContent = `Github: `
 
@@ -69,6 +72,8 @@ const init = () => {
       img.src = avatarImg
       img.height = 250
       img.width = 250
+      img.className = "avatar-img"
+
 
       btn.textContent = "Repo List"
       
@@ -76,6 +81,7 @@ const init = () => {
       li.appendChild(btn)
       li.appendChild(p)
       li.appendChild(img)
+      // li.appendChild(div)
       userSection.appendChild(li)
 
       repoBtns.push(btn)
@@ -104,8 +110,6 @@ const init = () => {
       handleFetch(url, renderRepoList)
     }
   }
-
-  const searchForm = document.getElementById("github-form")
 
   toggleSearchBtn.addEventListener("click", () => {
     if (labelText === "User")
