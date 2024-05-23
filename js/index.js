@@ -306,9 +306,26 @@ const init = () => {
     "watchers": 403,
     "default_branch": "master"
   }]
-  
+
   const userSection = document.getElementById("user-list")
   const repoSection = document.getElementById("repos-list")
+  const toggleSearchBtn = document.getElementById("toggle-search")
+  const searchLabel = document.getElementById("search-label")
+  let labelText = searchLabel.textContent.split(" ")[0]
+
+  const fetchData = (url) => {
+    let data
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/vnd.github.v3+json",
+      }})
+    .then(resp => resp.json())
+    .then(resp => data = resp)
+    .catch(console.log)
+    debugger
+    return data
+  }
 
   const renderRepoList = (repoArray) => {
     repoArray.forEach((repo) => {
@@ -327,6 +344,8 @@ const init = () => {
 
   const handleRepoBtn = (event) => {
     let selectedUser = event.target.parentNode.textContent.split(" ")[0]
+    let url = `https://api.github.com/users/${selectedUser}/repos`
+    let responseData
     repoSection.innerHTML = ""
 
     // fetch(`https://api.github.com/users/${selectedUser}/repos`,{
@@ -339,6 +358,10 @@ const init = () => {
     //   console.log(repoData)
     //   renderRepoList(repoData)
     // })
+
+    // responseData = fetchData(url)
+    // renderRepoList(responseData)
+
     renderRepoList(repoTest)
   }
 
@@ -384,20 +407,34 @@ const init = () => {
 
   const handleSearch = (event) => {
     event.preventDefault()
-    let userInput = event.target.search.value 
+    let userInput 
+    let responseData
+    let url 
+
     userSection.innerHTML = ""
 
-    fetch(`https://api.github.com/search/users?q=${userInput}`, {
-      method: "GET",
-      headers: {
-        "Accept": "application/vnd.github.v3+json",
-      }})
-    .then(resp => resp.json())
-    .then(searchList => renderSearch(searchList.items))
-    .catch(console.log)
+    if (labelText === "User"){
+      userInput = event.target.search.value 
+      url = `https://api.github.com/search/users?q=${userInput}`
+      responseData = fetchData(url)
+      renderSearch(responseData.items)
+    } else {
+      userInput = event.target.search.value 
+      url = `https://api.github.com/users/${selectedUser}/repos`
+      responseData = fetchData(url)
+    }
   }
 
   const searchForm = document.getElementById("github-form")
+
+  toggleSearchBtn.addEventListener("click", () => {
+    if (labelText === "User")
+      labelText = "Repo"
+    else 
+      labelText = "User"
+
+    searchLabel.textContent = `${labelText} Search`  
+  })
 
   searchForm.addEventListener("submit", handleSearch)
   
